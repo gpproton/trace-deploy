@@ -6,9 +6,4 @@ services:
     image: "scylladb/scylla:5.4"
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:4317"
-    ports:
-    - target: 9042
-      published: 9042
-    - target: 9160
-      published: 9160
     restart: unless-stopped
