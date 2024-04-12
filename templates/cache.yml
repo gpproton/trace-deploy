@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  cache:
+    container_name: "cache"
+    image: "docker.io/redis/redis-stack-server:7.2.0-v10"
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:4317"
+    ports:
+    - target: 6379
+      published: 6379
+    restart: unless-stopped
+

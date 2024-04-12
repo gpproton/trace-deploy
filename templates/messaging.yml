@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  messaging:
+    container_name: "messaging"
+    image: "rabbitmq:3"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:4317"
+    ports:
+    - target: 5672
+      published: 5672
+    restart: unless-stopped
