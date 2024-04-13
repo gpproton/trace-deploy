@@ -27,6 +27,9 @@ platforms:
 
 provisioner:
   name: ansible
+  connection_options:
+    ansible_ssh_user: vagrant
+    ansible_become: true
   inventory:
     host_vars:
       instance:
