@@ -6,12 +6,13 @@ name = "pypi"
 [packages]
 yamllint = "*"
 ansible-lint = "*"
-molecule-plugins = {extras = ["docker"], version = "*"}
 docker = "*"
 molecule = "*"
 ansible = "*"
 wheel = "*"
 setuptools = "*"
+molecule-plugins = {extras = ["docker,vagrant"], version = "*"}
+ansible-core = "*"
 
 [dev-packages]
 

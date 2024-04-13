@@ -25,3 +25,7 @@ pipx install pipenv
 ## Activate shell
 pipenv shell
 ```
+
+```shell
+vagrant box add generic/ubuntu2204 --provider libvirt
+```
