@@ -15,7 +15,7 @@ driver:
       cpus: 2
 
 platforms:
-  - name: test-ubuntu
+  - name: docker-ubuntu
     box: generic/ubuntu2204
     interfaces:
       - auto_config: true
@@ -32,6 +32,8 @@ provisioner:
       instance:
         ansible_user: ansible
         variable0: value
+  lint:
+    name: ansible-lint
   scenario:
     name: default
   playbooks:
