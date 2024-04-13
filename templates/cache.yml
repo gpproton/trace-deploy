@@ -6,5 +6,6 @@ services:
     image: "docker.io/redis/redis-stack-server:7.2.0-v10"
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: cache
     restart: unless-stopped
 

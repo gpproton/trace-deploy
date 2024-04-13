@@ -1,7 +1,6 @@
 x-app: &app
   restart: unless-stopped
   environment: &app-env
-    ASPNETCORE_URLS: "http://+:8080"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
     ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
@@ -9,12 +8,13 @@ x-app: &app
     MessagingPass: "guest"
     DbUser: "postgres"
     DbPass: "postgres"
+    CassandraHost: "scylladb"
     CassandraPort: 9042
     CassandraUser: "cassandra"
     CassandraPass: "cassandra"
     ConnectionStrings__cache: "cache:6379,abortConnect=false,AllowAdmin=true"
     ConnectionStrings__messaging: "amqp://guest:guest@messaging:5672"
-    ConnectionStrings__trace: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=trace"
+    ConnectionStrings__db: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=trace"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
     services__geocoding: "https://nominatim.openstreetmap.org"
     services__routing: "https://valhalla.openstreetmap.de"
@@ -41,12 +41,7 @@ services:
     image: ${REGISTRY}/trace-service-core:${VERSION}
     environment:
       <<: *app-env
-    ports:
-    - target: 8080
-      published: 10000
-    - target: 8443
-      published: 10001
-
+      OTEL_SERVICE_NAME: service-core
 
   service-integration:
     <<: *app
@@ -54,12 +49,7 @@ services:
     image: ${REGISTRY}/trace-service-integration:${VERSION}
     environment:
       <<: *app-env
-    ports:
-    - target: 8080
-      published: 10002
-    - target: 8443
-      published: 10003
-
+      OTEL_SERVICE_NAME: service-integration
 
   service-navigation:
     <<: *app
@@ -67,12 +57,7 @@ services:
     image: ${REGISTRY}/trace-service-navigation:${VERSION}
     environment:
       <<: *app-env
-    ports:
-    - target: 8080
-      published: 10004
-    - target: 8443
-      published: 10005
-
+      OTEL_SERVICE_NAME: service-navigation
 
   service-gateway:
     <<: *app
@@ -80,12 +65,7 @@ services:
     image: ${REGISTRY}/trace-service-gateway:${VERSION}
     environment:
       <<: *app-env
-    ports:
-    - target: 8080
-      published: 10006
-    - target: 8443
-      published: 10007
-
+      OTEL_SERVICE_NAME: service-gateway
 
   frontend:
     <<: *app
@@ -93,12 +73,25 @@ services:
     image: ${REGISTRY}/trace-frontend:${VERSION}
     environment:
       <<: *app-env
+      OTEL_SERVICE_NAME: frontend
     ports:
     - target: 8080
       published: 10008
     - target: 8443
       published: 10009
 
+  website:
+    container_name: website
+    image: ${REGISTRY}/trace-website:${VERSION}
+    environment:
+      <<: *app-env
+      OTEL_SERVICE_NAME: website
+    restart: unless-stopped
+    ports:
+      - target: 8080
+        published: 10010
+      - target: 8443
+        published: 10011
 
   manager:
     <<: *app
@@ -106,6 +99,7 @@ services:
     image: ${REGISTRY}/manager:${VERSION}
     environment:
       <<: *app-env
+      OTEL_SERVICE_NAME: manager
     ports:
     - target: 8080
       published: 10010
