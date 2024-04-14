@@ -13,3 +13,6 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: {{ otlp_endpoint }}
       OTEL_SERVICE_NAME: {{ service_name }}
     restart: unless-stopped
+    # ports:
+    #   - target: 6379
+    #     published: 6379

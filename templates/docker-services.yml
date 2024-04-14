@@ -4,18 +4,18 @@ x-app: &app
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
     ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
-    MessagingUser: "guest"
-    MessagingPass: "guest"
-    DbUser: "postgres"
-    DbPass: "postgres"
-    CassandraHost: "scylladb"
-    CassandraPort: 9042
-    CassandraUser: "cassandra"
-    CassandraPass: "cassandra"
-    ConnectionStrings__cache: "cache:6379,abortConnect=false,AllowAdmin=true"
-    ConnectionStrings__messaging: "amqp://guest:guest@messaging:5672"
-    ConnectionStrings__db: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=trace"
-    OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+    MessagingUser: {{ messaging.username }}
+    MessagingPass: {{ messaging.password }}
+    DbUser: {{ db.username }}
+    DbPass: {{ db.password }}
+    CassandraHost: {{ scylladb.host }}
+    CassandraPort: {{ scylladb.port }}
+    CassandraUser: {{ scylladb.username }}
+    CassandraPass: {{ scylladb.password }}
+    ConnectionStrings__cache: {{ ConnectionStrings.cache }}
+    ConnectionStrings__messaging: {{ ConnectionStrings.messaging }}
+    ConnectionStrings__db: {{ ConnectionStrings.db }}
+    OTEL_EXPORTER_OTLP_ENDPOINT: {{ otlp_endpoint }}
     services__geocoding: "https://nominatim.openstreetmap.org"
     services__routing: "https://valhalla.openstreetmap.de"
     services__service-gateway__0: "http://service-gateway:8080"
@@ -42,6 +42,9 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-core
+    ports:
+      - target: 8080
+        published: 10000
 
   service-integration:
     <<: *app
@@ -50,6 +53,9 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-integration
+    ports:
+      - target: 8080
+        published: 10002
 
   service-navigation:
     <<: *app
@@ -58,6 +64,9 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-navigation
+    ports:
+      - target: 8080
+        published: 10004
 
   service-gateway:
     <<: *app
@@ -66,6 +75,9 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-gateway
+    ports:
+      - target: 8080
+        published: 10006
 
   frontend:
     <<: *app
@@ -77,8 +89,6 @@ services:
     ports:
     - target: 8080
       published: 10008
-    - target: 8443
-      published: 10009
 
   website:
     container_name: website
@@ -90,8 +100,6 @@ services:
     ports:
       - target: 8080
         published: 10010
-      - target: 8443
-        published: 10011
 
   manager:
     <<: *app
@@ -102,7 +110,5 @@ services:
       OTEL_SERVICE_NAME: manager
     ports:
     - target: 8080
-      published: 10010
-    - target: 8443
-      published: 10011
+      published: 10012
 

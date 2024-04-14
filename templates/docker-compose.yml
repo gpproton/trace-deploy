@@ -18,6 +18,6 @@ services:
     ports:
     - target: 18888
       published: 18888
-    # - target: 18889
-    #   published: 4317
+    - target: 18889
+      published: 4317
     restart: unless-stopped
