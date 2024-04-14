@@ -1,2 +1,25 @@
 ---
-# tasks file for trace
+- name: create temp directory
+  tempfile:
+    state: directory
+    suffix: network
+  register: temp_dir
+- include_tasks: task-defaults.yml
+  vars:
+    service_name: defaults
+
+- include_tasks: task-service.yml
+  vars:
+    service_name: cache
+
+- include_tasks: task-service.yml
+  vars:
+    service_name: messaging
+
+- include_tasks: task-service.yml
+  vars:
+    service_name: scylladb
+
+- include_tasks: task-service.yml
+  vars:
+    service_name: db

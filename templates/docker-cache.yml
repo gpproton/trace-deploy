@@ -1,0 +1,15 @@
+version: "3.8"
+
+networks:
+  default:
+    name: {{ stack_network }}
+    external: true
+
+services:
+  cache:
+    container_name: {{ service_name }}
+    image: {{ images.cache }}
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: {{ otlp_endpoint }}
+      OTEL_SERVICE_NAME: {{ service_name }}
+    restart: unless-stopped

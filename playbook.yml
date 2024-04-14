@@ -1,6 +1,0 @@
----
-- hosts: all
-  vars:
-    routes: []
-  roles:
-    - drolx.trace

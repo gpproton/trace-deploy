@@ -1,9 +1,18 @@
 version: "3.8"
 
+networks:
+  default:
+    name: {{ stack_network }}
+    driver: overlay
+    attachable: true
+    ipam:
+      config:
+        - subnet: 10.10.55.0/24
+
 services:
   aspire-dashboard:
-    container_name: "aspire-dashboard"
-    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.5"
+    container_name: aspire-dashboard
+    image: {{ images.dashboard }}
     environment:
       DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
     ports:
@@ -12,4 +21,3 @@ services:
     # - target: 18889
     #   published: 4317
     restart: unless-stopped
-

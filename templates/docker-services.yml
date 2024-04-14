@@ -31,7 +31,7 @@ version: "3.8"
 
 networks:
   default:
-    name: trace_staging
+    name: {{ stack_network }}
     external: true
 
 services:
