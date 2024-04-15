@@ -4,22 +4,20 @@
     state: directory
     suffix: network
   register: temp_dir
+
 - include_tasks: task-defaults.yml
   vars:
     service_name: defaults
 
-- include_tasks: task-service.yml
+- include_tasks: "task-service.yml"
   vars:
-    service_name: cache
+    service_name: {{ item }}
+  with_items:
+    - cache
+    - messaging
+    - scylladb
+    - db
 
 - include_tasks: task-service.yml
   vars:
-    service_name: messaging
-
-- include_tasks: task-service.yml
-  vars:
-    service_name: scylladb
-
-- include_tasks: task-service.yml
-  vars:
-    service_name: db
+    service_name: services

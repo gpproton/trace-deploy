@@ -14,7 +14,7 @@ x-app: &app
     CassandraPass: {{ scylladb.password }}
     ConnectionStrings__cache: {{ ConnectionStrings.cache }}
     ConnectionStrings__messaging: {{ ConnectionStrings.messaging }}
-    ConnectionStrings__db: {{ ConnectionStrings.db }}
+    ConnectionStrings__trace: {{ ConnectionStrings.db }}
     OTEL_EXPORTER_OTLP_ENDPOINT: {{ otlp_endpoint }}
     services__geocoding: "https://nominatim.openstreetmap.org"
     services__routing: "https://valhalla.openstreetmap.de"
@@ -42,6 +42,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-core
+    restart: unless-stopped
     ports:
       - target: 8080
         published: 10000
@@ -53,6 +54,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-integration
+    restart: unless-stopped
     ports:
       - target: 8080
         published: 10002
@@ -64,6 +66,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-navigation
+    restart: unless-stopped
     ports:
       - target: 8080
         published: 10004
@@ -75,6 +78,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-gateway
+    restart: unless-stopped
     ports:
       - target: 8080
         published: 10006
@@ -86,6 +90,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: frontend
+    restart: unless-stopped
     ports:
     - target: 8080
       published: 10008
@@ -96,6 +101,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: website
+    restart: unless-stopped
     restart: unless-stopped
     ports:
       - target: 8080
@@ -108,7 +114,7 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: manager
+    restart: unless-stopped
     ports:
     - target: 8080
       published: 10012
-

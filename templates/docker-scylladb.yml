@@ -5,6 +5,9 @@ networks:
     name: {{ stack_network }}
     external: true
 
+volumes:
+  scylladb:
+
 services:
   scylladb:
     container_name: {{ service_name }}
@@ -13,6 +16,10 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: {{ otlp_endpoint }}
       OTEL_SERVICE_NAME: {{ service_name }}
     restart: unless-stopped
+    networks:
+      - default
+    volumes:
+      - scylladb:/var/lib/scylla
     # ports:
     #   - target: 9042
     #     published: 9042
