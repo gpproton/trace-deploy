@@ -1,5 +1,5 @@
 ---
-version: 0.0.1-preview.7
+version: 0.0.1-preview.9
 stack_name: trace
 stack_network: trace-net
 domain: trace.ng
