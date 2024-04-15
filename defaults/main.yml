@@ -1,8 +1,9 @@
 ---
-version:
+version: 0.0.1-preview.7
 stack_name: trace
 stack_network: trace-net
 domain: trace.ng
+registry: ghcr.io/drolx
 otlp_endpoint: "http://aspire-dashboard:18889"
 
 images:

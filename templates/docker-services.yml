@@ -38,7 +38,7 @@ services:
   service-core:
     <<: *app
     container_name: "service-core"
-    image: ${REGISTRY}/trace-service-core:${VERSION}
+    image: "{{ registry }}/trace-service-core:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-core
@@ -50,7 +50,7 @@ services:
   service-integration:
     <<: *app
     container_name: service-integration
-    image: ${REGISTRY}/trace-service-integration:${VERSION}
+    image: "{{ registry }}/trace-service-integration:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-integration
@@ -62,7 +62,7 @@ services:
   service-navigation:
     <<: *app
     container_name: service-navigation
-    image: ${REGISTRY}/trace-service-navigation:${VERSION}
+    image: "{{ registry }}/trace-service-navigation:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-navigation
@@ -74,7 +74,7 @@ services:
   service-gateway:
     <<: *app
     container_name: service-gateway
-    image: ${REGISTRY}/trace-service-gateway:${VERSION}
+    image: "{{ registry }}/trace-service-gateway:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-gateway
@@ -86,7 +86,7 @@ services:
   frontend:
     <<: *app
     container_name: frontend
-    image: ${REGISTRY}/trace-frontend:${VERSION}
+    image: "{{ registry }}/trace-frontend:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: frontend
@@ -97,7 +97,7 @@ services:
 
   website:
     container_name: website
-    image: ${REGISTRY}/trace-website:${VERSION}
+    image: "{{ registry }}/trace-website:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: website
@@ -110,7 +110,7 @@ services:
   manager:
     <<: *app
     container_name: manager
-    image: ${REGISTRY}/manager:${VERSION}
+    image: "{{ registry }}/trace-manager:{{ version }}"
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: manager

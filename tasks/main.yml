@@ -11,7 +11,7 @@
 
 - include_tasks: "task-service.yml"
   vars:
-    service_name: {{ item }}
+    service_name: "{{ item }}"
   with_items:
     - cache
     - messaging
