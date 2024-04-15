@@ -1,0 +1,50 @@
+---
+role_name_check: 1
+dependency:
+  name: galaxy
+  options:
+    ignore-errors: true
+
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+    type: libvirt
+    options:
+      memory: 4096
+      cpus: 2
+
+platforms:
+  - name: docker-ubuntu
+    box: generic/ubuntu2204
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 192.168.10.10
+    groups:
+      - staging
+
+provisioner:
+  name: ansible
+  connection_options:
+    ansible_ssh_user: vagrant
+    ansible_become: true
+  inventory:
+    host_vars:
+      instance:
+        ansible_user: ansible
+        variable0: value
+  lint:
+    name: ansible-lint
+  scenario:
+    name: default
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-../resources/converge.yml}
+    # prepare: ../resources/prepare.yml
+    requirements: ../resources/requirements.yml
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

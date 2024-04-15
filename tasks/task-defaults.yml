@@ -1,0 +1,8 @@
+---
+- name: "interpolate docker-compose file"
+  template:
+    src: docker-compose.yml
+    dest: "{{ temp_dir.path }}/docker-compose.yml"
+
+- name: "deploy in {{ service_name }} {{ stack_name }} stack"
+  command: "docker stack deploy --compose-file {{ temp_dir.path }}/docker-compose.yml --prune {{ stack_name }}"
