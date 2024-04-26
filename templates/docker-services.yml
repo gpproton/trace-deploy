@@ -35,6 +35,17 @@ networks:
     external: true
 
 services:
+  service-worker:
+    <<: *app
+    container_name: "service-worker"
+    image: "{{ registry }}/trace-service-worker:{{ version }}"
+    environment:
+      <<: *app-env
+      OTEL_SERVICE_NAME: service-worker
+    ports:
+      - target: 8080
+        published: 10000
+
   service-core:
     <<: *app
     container_name: "service-core"
@@ -45,15 +56,15 @@ services:
     restart: unless-stopped
     ports:
       - target: 8080
-        published: 10000
+        published: 10001
 
   service-integration:
     <<: *app
-    container_name: service-integration
+    container_name: "service-integration"
     image: "{{ registry }}/trace-service-integration:{{ version }}"
     environment:
       <<: *app-env
-      OTEL_SERVICE_NAME: service-integration
+      OTEL_SERVICE_NAME: "service-integration"
     restart: unless-stopped
     ports:
       - target: 8080
@@ -61,60 +72,60 @@ services:
 
   service-navigation:
     <<: *app
-    container_name: service-navigation
+    container_name: "service-navigation"
     image: "{{ registry }}/trace-service-navigation:{{ version }}"
     environment:
       <<: *app-env
-      OTEL_SERVICE_NAME: service-navigation
+      OTEL_SERVICE_NAME: "service-navigation"
+    restart: unless-stopped
+    ports:
+      - target: 8080
+        published: 10003
+
+  service-gateway:
+    <<: *app
+    container_name: "service-gateway"
+    image: "{{ registry }}/trace-service-gateway:{{ version }}"
+    environment:
+      <<: *app-env
+      OTEL_SERVICE_NAME: "service-gateway"
     restart: unless-stopped
     ports:
       - target: 8080
         published: 10004
 
-  service-gateway:
-    <<: *app
-    container_name: service-gateway
-    image: "{{ registry }}/trace-service-gateway:{{ version }}"
-    environment:
-      <<: *app-env
-      OTEL_SERVICE_NAME: service-gateway
-    restart: unless-stopped
-    ports:
-      - target: 8080
-        published: 10006
-
   frontend:
     <<: *app
-    container_name: frontend
+    container_name: "frontend"
     image: "{{ registry }}/trace-frontend:{{ version }}"
     environment:
       <<: *app-env
-      OTEL_SERVICE_NAME: frontend
+      OTEL_SERVICE_NAME: "frontend"
     restart: unless-stopped
     ports:
     - target: 8080
-      published: 10008
+      published: 10020
 
   website:
-    container_name: website
+    container_name: "website"
     image: "{{ registry }}/trace-website:{{ version }}"
     environment:
       <<: *app-env
-      OTEL_SERVICE_NAME: website
+      OTEL_SERVICE_NAME: "website"
     restart: unless-stopped
     restart: unless-stopped
     ports:
       - target: 8080
-        published: 10010
+        published: 10020
 
   manager:
     <<: *app
-    container_name: manager
+    container_name: "manager"
     image: "{{ registry }}/trace-manager:{{ version }}"
     environment:
       <<: *app-env
-      OTEL_SERVICE_NAME: manager
+      OTEL_SERVICE_NAME: "manager"
     restart: unless-stopped
     ports:
     - target: 8080
-      published: 10012
+      published: 10030

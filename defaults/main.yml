@@ -8,10 +8,10 @@ otlp_endpoint: "http://aspire-dashboard:18889"
 
 images:
   cache: "docker.io/redis/redis-stack-server:7.2.0-v10"
-  dashboard: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.5"
+  db: "docker.io/postgis/postgis:15-3.3"
+  dashboard: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6"
   messaging: "docker.io/rabbitmq:3-alpine"
   warehouse: "docker.io/scylladb/scylla:5.4"
-  db: "docker.io/postgis/postgis:15-3.3"
 
 messaging:
   username: "guest"
