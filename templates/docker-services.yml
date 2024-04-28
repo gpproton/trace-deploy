@@ -48,6 +48,9 @@ networks:
   default:
     name: {{ stack_network }}
     external: true
+  traefik:
+    name: {{ proxy_network }}
+    external: true
 
 services:
   service-worker:
@@ -133,8 +136,13 @@ services:
         traefik.http.routers.trace.service: trace
         traefik.http.routers.trace.tls.certresolver: "{{ traefik_certresolver }}"
     ports:
-    - target: 8443
-      published: 10010
+      - target: 8443
+        published: 10010
+      - target: 8080
+        published: 10015
+    networks:
+      - default
+      - traefik
 
   website:
     container_name: "website"
@@ -161,10 +169,15 @@ services:
         traefik.http.routers.trace-website.entrypoints: "{{ traefik_entrypoints }}"
         traefik.http.routers.trace-website.service: trace-preview
         traefik.http.routers.trace-website.tls.certresolver: "{{ traefik_certresolver }}"
-        traefik.http.routers.trace-website.middlewares: redirect-www-to-non-www@file,preview-redirect
+        traefik.http.routers.trace-website.middlewares: preview-redirect
     ports:
       - target: 8443
         published: 10020
+      - target: 8080
+        published: 10025
+    networks:
+      - default
+      - traefik
 
   manager:
     <<: *app
@@ -184,5 +197,10 @@ services:
         traefik.http.routers.trace-manager.service: trace-manager
         traefik.http.routers.trace-manager.tls.certresolver: "{{ traefik_certresolver }}"
     ports:
-    - target: 8443
-      published: 10030
+      - target: 8443
+        published: 10030
+      - target: 8080
+        published: 10035
+    networks:
+      - default
+      - traefik
