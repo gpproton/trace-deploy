@@ -5,6 +5,7 @@ stack_network: trace-net
 domain: trace.ng
 website_domain: preview.trace.ng
 manager_domain: manager.trace.ng
+dashboard_domain: telemetry.trace.ng
 demo_domain: demo.trace.ng
 registry: ghcr.io/drolx
 cert_dir: "~"
@@ -17,7 +18,7 @@ otlp_endpoint: "http://dashboard:18889"
 images:
   cache: "docker.io/redis/redis-stack-server:7.2.0-v10"
   db: "docker.io/postgis/postgis:15-3.3"
-  dashboard: "mcr.microsoft.com/dotnet/nightly/dashboard:8.0.0-preview.6"
+  dashboard: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6"
   messaging: "docker.io/rabbitmq:3-alpine"
   warehouse: "docker.io/scylladb/scylla:5.4"
 
