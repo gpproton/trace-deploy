@@ -1,7 +1,7 @@
 x-app: &app
   restart: unless-stopped
   volumes:
-    - "{{ cert_dir }}/localhost.pfx:/app/certs/localhost.pfx:ro"
+    - "{{ cert_dir }}/localhost.pfx:/app/localhost.pfx:ro"
   deploy: &app-deploy
       mode: replicated
       resources:
@@ -18,7 +18,7 @@ x-app: &app
     ASPNETCORE_HTTP_PORTS: 8080
     ASPNETCORE_HTTPS_PORTS: 8443
     ASPNETCORE_Kestrel__Certificates__Default__Password: ""
-    ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/certs/localhost.pfx"
+    ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/localhost.pfx"
     MessagingUser: {{ messaging.username }}
     MessagingPass: {{ messaging.password }}
     DbUser: {{ db.username }}
@@ -134,7 +134,7 @@ services:
         traefik.http.routers.trace.tls.certresolver: "{{ traefik_certresolver }}"
     ports:
     - target: 8443
-      published: 10020
+      published: 10010
 
   website:
     container_name: "website"
@@ -142,6 +142,8 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "website"
+    volumes:
+      - "{{ cert_dir }}/localhost.pfx:/app/localhost.pfx:ro"
     deploy:
       <<: *app-deploy
       labels:
