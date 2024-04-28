@@ -17,7 +17,7 @@
     - messaging
     - scylladb
     - db
-    - dashboard
+    # - dashboard
 
 - include_tasks: task-service.yml
   vars:
