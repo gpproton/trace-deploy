@@ -8,6 +8,8 @@ manager_domain: manager.trace.ng
 demo_domain: demo.trace.ng
 registry: ghcr.io/drolx
 cert_dir: "~"
+service_memory: "256M"
+service_cpus: "0.5"
 traefik_entrypoints: web-secure
 traefik_certresolver: cloudflare
 otlp_endpoint: "http://dashboard:18889"

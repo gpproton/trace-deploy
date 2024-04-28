@@ -9,6 +9,8 @@ services:
     image: {{ images.dashboard }}
     environment:
       DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+      ASPNETCORE_HTTP_PORTS: 8080
+      ASPNETCORE_HTTPS_PORTS: 8443
       ASPNETCORE_Kestrel__Certificates__Default__Password: ""
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/certs/localhost.pfx"
     ports:
