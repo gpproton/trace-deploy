@@ -9,3 +9,40 @@ networks:
       config:
         - subnet: 10.10.55.0/24
 
+services:
+  dashboard:
+    container_name: dashboard
+    image: {{ images.dashboard }}
+    environment:
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+      ASPNETCORE_HTTPS_PORTS: 18888
+      "Dashboard:ApplicationName": Trace
+      "Dashboard:ResourceServiceClient:ClientCertificate:Password": ""
+      "Dashboard:ResourceServiceClient:ClientCertificate:FilePath": "/root/.aspnet/https/localhost.pfx"
+    ports:
+      - target: 18888
+        published: 18888
+      - target: 18889
+        published: 4317
+    restart: unless-stopped
+    volumes:
+    - "{{ cert_dir }}/localhost.pfx:/root/.aspnet/https/localhost.pfx:ro"
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+        reservations:
+          cpus: "0.025"
+          memory: 128M
+      labels:
+        traefik.enable: "true"
+        traefik.http.services.trace-dashbaord.loadbalancer.server.port: 8443
+        traefik.http.services.trace-dashbaord.loadbalancer.server.scheme: https
+        traefik.http.routers.trace-dashbaord.rule: Host(`{{ dashboard_domain }}`)
+        traefik.http.routers.trace-dashbaord.entrypoints: "{{ traefik_entrypoints }}"
+        traefik.http.routers.trace-dashbaord.service: trace-dashbaord
+        traefik.http.routers.trace-dashbaord.tls.certresolver: "{{ traefik_certresolver }}"
+    networks:
+      - default
