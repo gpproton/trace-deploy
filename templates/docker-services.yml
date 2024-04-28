@@ -1,9 +1,22 @@
 x-app: &app
   restart: unless-stopped
+  volumes:
+    - "{{ cert_dir }}/localhost.pfx:/app/certs/localhost.pfx:ro"
+  deploy: &app-deploy
+      mode: replicated
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+        reservations:
+          cpus: "0.025"
+          memory: 128M
   environment: &app-env
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
     ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+    ASPNETCORE_Kestrel__Certificates__Default__Password: ""
+    ASPNETCORE_Kestrel__Certificates__Default__Path: "/app/certs/localhost.pfx"
     MessagingUser: {{ messaging.username }}
     MessagingPass: {{ messaging.password }}
     DbUser: {{ db.username }}
@@ -42,8 +55,10 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: service-worker
+    deploy:
+      <<: *app-deploy
     ports:
-      - target: 8080
+      - target: 8443
         published: 10000
 
   service-core:
@@ -52,10 +67,11 @@ services:
     image: "{{ registry }}/trace-service-core:{{ version }}"
     environment:
       <<: *app-env
-      OTEL_SERVICE_NAME: service-core
-    restart: unless-stopped
+      OTEL_SERVICE_NAME: "service-core"
+    deploy:
+      <<: *app-deploy
     ports:
-      - target: 8080
+      - target: 8443
         published: 10001
 
   service-integration:
@@ -65,9 +81,10 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "service-integration"
-    restart: unless-stopped
+    deploy:
+      <<: *app-deploy
     ports:
-      - target: 8080
+      - target: 8443
         published: 10002
 
   service-navigation:
@@ -77,9 +94,10 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "service-navigation"
-    restart: unless-stopped
+    deploy:
+      <<: *app-deploy
     ports:
-      - target: 8080
+      - target: 8443
         published: 10003
 
   service-gateway:
@@ -89,9 +107,10 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "service-gateway"
-    restart: unless-stopped
+    deploy:
+      <<: *app-deploy
     ports:
-      - target: 8080
+      - target: 8443
         published: 10004
 
   frontend:
@@ -101,9 +120,18 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "frontend"
-    restart: unless-stopped
+    deploy:
+      <<: *app-deploy
+      labels:
+        traefik.enable: "true"
+        traefik.http.services.trace.loadbalancer.server.port: 8443
+        traefik.http.services.trace.loadbalancer.server.scheme: https
+        traefik.http.routers.trace.rule: HostRegexp(`^.+\.trace\.ng$$`) || Host(`{{ demo_domain }}`)
+        traefik.http.routers.trace.entrypoints: "{{ traefik_entrypoints }}"
+        traefik.http.routers.trace.service: trace
+        traefik.http.routers.trace.tls.certresolver: "{{ traefik_certresolver }}"
     ports:
-    - target: 8080
+    - target: 8443
       published: 10020
 
   website:
@@ -112,10 +140,26 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "website"
-    restart: unless-stopped
-    restart: unless-stopped
+    deploy:
+      <<: *app-deploy
+      labels:
+        traefik.enable: "true"
+        traefik.http.middlewares.preview-redirect.redirectregex.regex: "^http://{{ domain }}/(.*)"
+        traefik.http.middlewares.preview-redirect.redirectregex.replacement: "http://{{ website_domain }}/$${1}"
+        traefik.http.middlewares.preview-redirect.redirectregex.permanent: "true"
+        traefik.http.services.trace-preview.loadbalancer.server.port: 8443
+        traefik.http.services.trace-preview.loadbalancer.server.scheme: https
+        traefik.http.routers.trace-preview.rule: Host(`{{ website_domain }}`)
+        traefik.http.routers.trace-preview.entrypoints: "{{ traefik_entrypoints }}"
+        traefik.http.routers.trace-preview.service: trace-preview
+        traefik.http.routers.trace-preview.tls.certresolver: "{{ traefik_certresolver }}"
+        traefik.http.routers.trace-website.rule: Host(`{{ domain }}`) || Host(`www.{{ domain }}`)
+        traefik.http.routers.trace-website.entrypoints: "{{ traefik_entrypoints }}"
+        traefik.http.routers.trace-website.service: trace-preview
+        traefik.http.routers.trace-website.tls.certresolver: "{{ traefik_certresolver }}"
+        traefik.http.routers.trace-website.middlewares: redirect-www-to-non-www@file,preview-redirect
     ports:
-      - target: 8080
+      - target: 8443
         published: 10020
 
   manager:
@@ -125,7 +169,16 @@ services:
     environment:
       <<: *app-env
       OTEL_SERVICE_NAME: "manager"
-    restart: unless-stopped
+    deploy:
+      <<: *app-deploy
+      labels:
+        traefik.enable: "true"
+        traefik.http.services.trace-manager.loadbalancer.server.port: 8443
+        traefik.http.services.trace-manager.loadbalancer.server.scheme: https
+        traefik.http.routers.trace-manager.rule: Host(`{{ manager_domain }}`)
+        traefik.http.routers.trace-manager.entrypoints: "{{ traefik_entrypoints }}"
+        traefik.http.routers.trace-manager.service: trace-manager
+        traefik.http.routers.trace-manager.tls.certresolver: "{{ traefik_certresolver }}"
     ports:
-    - target: 8080
+    - target: 8443
       published: 10030

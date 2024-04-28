@@ -3,13 +3,19 @@ version: 0.0.1-preview.10
 stack_name: trace
 stack_network: trace-net
 domain: trace.ng
+website_domain: preview.trace.ng
+manager_domain: manager.trace.ng
+demo_domain: demo.trace.ng
 registry: ghcr.io/drolx
-otlp_endpoint: "http://aspire-dashboard:18889"
+cert_dir: "~"
+traefik_entrypoints: web-secure
+traefik_certresolver: cloudflare
+otlp_endpoint: "http://dashboard:18889"
 
 images:
   cache: "docker.io/redis/redis-stack-server:7.2.0-v10"
   db: "docker.io/postgis/postgis:15-3.3"
-  dashboard: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6"
+  dashboard: "mcr.microsoft.com/dotnet/nightly/dashboard:8.0.0-preview.6"
   messaging: "docker.io/rabbitmq:3-alpine"
   warehouse: "docker.io/scylladb/scylla:5.4"
 
