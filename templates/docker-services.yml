@@ -132,7 +132,7 @@ services:
         traefik.enable: "true"
         traefik.http.services.trace.loadbalancer.server.port: 8443
         traefik.http.services.trace.loadbalancer.server.scheme: https
-        traefik.http.routers.trace.rule: "HostRegexp(`{{ demo_domain }}`, `{subdomain:[a-z.]+}.{{ domain }}`)"
+        traefik.http.routers.trace.rule: "HostRegexp(`{{ demo_domain }}`, `{subdomain:[a-z]+}.{{ domain }}`)"
         traefik.http.routers.trace.entrypoints: "{{ traefik_entrypoints }}"
         traefik.http.routers.trace.service: trace
         traefik.http.routers.trace.tls.certresolver: "{{ traefik_certresolver }}"
