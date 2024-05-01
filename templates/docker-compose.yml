@@ -41,7 +41,7 @@ services:
           memory: 128M
       labels:
         traefik.enable: "true"
-        traefik.http.services.trace-dashbaord.loadbalancer.server.port: 8443
+        traefik.http.services.trace-dashbaord.loadbalancer.server.port: 443
         traefik.http.services.trace-dashbaord.loadbalancer.server.scheme: https
         traefik.http.routers.trace-dashbaord.rule: Host(`{{ dashboard_domain }}`)
         traefik.http.routers.trace-dashbaord.entrypoints: "{{ traefik_entrypoints }}"
