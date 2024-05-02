@@ -1,5 +1,5 @@
 ---
-version: 0.0.1-preview.13
+version: 0.0.1-preview.14
 stack_name: trace
 stack_network: trace-net
 proxy_network: traefik_net
