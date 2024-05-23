@@ -148,6 +148,7 @@ services:
       - traefik
 
   website:
+    <<: *app
     container_name: "website"
     image: "{{ registry }}/trace-website:{{ version }}"
     environment:
