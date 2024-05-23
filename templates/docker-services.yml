@@ -132,7 +132,7 @@ services:
         traefik.enable: "true"
         traefik.http.services.trace.loadbalancer.server.port: 443
         traefik.http.services.trace.loadbalancer.server.scheme: https
-        traefik.http.routers.trace.rule: "HostRegexp(`{{ demo_domain }}`, `{subdomain:[a-z]+}.{{ domain }}`)"
+        traefik.http.routers.trace.rule: "Host(`{{ demo_domain }}`) | Host(`staging.{{ domain }}`)" # "HostRegexp(`{{ demo_domain }}`, `{subdomain:[a-z]+}.{{ domain }}`)"
         traefik.http.routers.trace.entrypoints: "{{ traefik_entrypoints }}"
         traefik.http.routers.trace.service: trace
         traefik.http.routers.trace.tls.certresolver: "{{ traefik_certresolver }}"
@@ -157,8 +157,8 @@ services:
       <<: *app-deploy
       labels:
         traefik.enable: "true"
-        traefik.http.middlewares.preview-redirect.redirectregex.regex: "^http://{{ domain }}/(.*)"
-        traefik.http.middlewares.preview-redirect.redirectregex.replacement: "http://{{ website_domain }}/$${1}"
+        traefik.http.middlewares.preview-redirect.redirectregex.regex: "^https://{{ domain }}/(.*)"
+        traefik.http.middlewares.preview-redirect.redirectregex.replacement: "https://{{ website_domain }}/$${1}"
         traefik.http.middlewares.preview-redirect.redirectregex.permanent: "true"
         traefik.http.services.trace-preview.loadbalancer.server.port: 443
         traefik.http.services.trace-preview.loadbalancer.server.scheme: https
