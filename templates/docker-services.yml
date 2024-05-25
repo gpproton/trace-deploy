@@ -132,12 +132,14 @@ services:
         traefik.enable: "true"
         traefik.http.services.trace.loadbalancer.server.port: 443
         traefik.http.services.trace.loadbalancer.server.scheme: https
+        traefik.http.middlewares.trace-pwa-cache.headers.customrequestheaders.Cache-Control: "public,max-age=31536000"
         traefik.http.routers.trace.rule: "Host(`{{ demo_domain }}`) || Host(`staging.{{ domain }}`)"
         traefik.http.routers.trace.entrypoints: "{{ traefik_entrypoints }}"
         traefik.http.routers.trace.service: trace
         traefik.http.routers.trace.tls.certresolver: "{{ traefik_certresolver }}"
         traefik.http.routers.trace.tls.domains[0].main: "{{ demo_domain }}"
         traefik.http.routers.trace.tls.domains[0].sans: "*.{{ domain }}"
+        traefik.http.routers.trace.middlewares: trace-pwa-cache
     ports:
       - target: 443
         published: 10010
@@ -161,6 +163,7 @@ services:
         traefik.http.middlewares.preview-redirect.redirectregex.regex: "^https://{{ domain }}/(.*)"
         traefik.http.middlewares.preview-redirect.redirectregex.replacement: "https://{{ website_domain }}/$${1}"
         traefik.http.middlewares.preview-redirect.redirectregex.permanent: "true"
+        traefik.http.middlewares.trace-pwa-cache.headers.customrequestheaders.Cache-Control: "public,max-age=31536000"
         traefik.http.services.trace-preview.loadbalancer.server.port: 443
         traefik.http.services.trace-preview.loadbalancer.server.scheme: https
         traefik.http.routers.trace-preview.rule: Host(`{{ website_domain }}`)
@@ -170,7 +173,7 @@ services:
         traefik.http.routers.trace-website.rule: Host(`{{ domain }}`) || Host(`www.{{ domain }}`)
         traefik.http.routers.trace-website.entrypoints: "{{ traefik_entrypoints }}"
         traefik.http.routers.trace-website.tls.certresolver: "{{ traefik_certresolver }}"
-        traefik.http.routers.trace-website.middlewares: preview-redirect
+        traefik.http.routers.trace-website.middlewares: preview-redirect,trace-pwa-cache
     ports:
       - target: 443
         published: 10020
